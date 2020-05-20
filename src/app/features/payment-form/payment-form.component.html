@@ -5,11 +5,116 @@
       <form [formGroup]="paymentForm" #ngForm="ngForm" (ngSubmit)="onSubmit()">
         <div class="form-group">
           <label for="countrySelect">Select Country</label>
-          <select class="form-control" id="countrySelect" formControlName="country">
-            <option *ngFor="let country of countries" [value]="country.code">{{ country.name }}</option>
+          <select class="form-control" id="countrySelect"
+                  formControlName="country"
+                  [ngClass]="{ 'is-invalid':  ngForm.submitted && paymentForm.controls.country.errors }"
+          >
+            <option *ngFor="let country of countries" [value]="country.alpha2Code">{{ country.name }}</option>
           </select>
+          <div class="invalid-feedback">
+            Please provide a valid country.
+          </div>
         </div>
+        <div class="input-group mb-3">
+          <input type="number" class="form-control"
+                 formControlName="amount"
+                 aria-label="Amount (to the nearest dollar)"
+                 [ngClass]="{ 'is-invalid':  ngForm.submitted && paymentForm.controls.amount.errors }"
+          >
+          <div class="input-group-append">
+            <span class="input-group-text">{{currentCurrency}}</span>
+          </div>
+          <div class="invalid-feedback">
+            Please enter payment amount (number)
+          </div>
+        </div>
+        <div class="form-group"  >
+          <label>Payment method</label>
+          <div class="custom-control custom-radio "
+               *ngFor="let method of paymentMethod"
+               [ngClass]="{ 'is-invalid': ngForm.submitted && paymentForm.controls.paymentMethod.errors }"
+          >
+            <input type="radio" id="{{method.id}}" class="custom-control-input" formControlName="paymentMethod" name="paymentMethod" [value]="method.id" required>
+            <label class="custom-control-label"  for="{{method.id}}" >
+              <img [src]="method.img_url" alt="{{ method.name }}" class="method-logo" />
+            </label>
+          </div>
+          <div class="invalid-feedback">
+            You must pick a PaymentWall Method
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="countrySelect">Cardholder Name</label>
+          <input type="text" class="form-control"
+                  formControlName="cardholderName"
+                  [ngClass]="{ 'is-invalid':  ngForm.submitted && paymentForm.controls.cardholderName.errors }"
+                 placeholder="Cardholder Name"
+          >
+          <div class="invalid-feedback">
+            Please provide a valid cardholder name.
+          </div>
+        </div>
+
+        <div class="form-group"  >
+          <label for="countrySelect">Credit Card Number</label>
+          <input type="text" class="form-control"
+                 formControlName="creditCardNumber"
+                 placeholder="XXXX-XXXX-XXXX-XXXX"
+                 [ngClass]="{ 'is-invalid':  ngForm.submitted && paymentForm.controls.creditCardNumber.errors }"
+          >
+          <div class="invalid-feedback">
+            Please provide a valid credit card number.
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <div class="form-group"  >
+              <label for="countrySelect">Expiry Date</label>
+              <input type="text" class="form-control"
+                     formControlName="expDate"
+                     placeholder="MM/YY"
+                     [maxLength]="5"
+                     [ngClass]="{ 'is-invalid':  ngForm.submitted && paymentForm.controls.expDate.errors }"
+              >
+              <div class="invalid-feedback">
+                Please enter valid expiry date
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-group"  >
+              <label for="countrySelect">CVV</label>
+              <input type="number" class="form-control"
+                     formControlName="cvv"
+                     placeholder="CVV"
+                     [maxLength]="3"
+                     [ngClass]="{ 'is-invalid':  ngForm.submitted && paymentForm.controls.expDate.errors }"
+              >
+              <div class="invalid-feedback">
+                Please provide a valid CVV.
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <button class="btn btn-primary btn-block" type="submit">Pay {{paymentForm.controls.amount.value | number:'1.2-2'}} {{currentCurrency}}</button>
       </form>
     </div>
   </div>
 </article>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Payment successfully!</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+     You have purchased successfully!
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Close</button>
+  </div>
+</ng-template>
