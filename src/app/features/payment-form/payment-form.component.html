@@ -2,7 +2,14 @@
   <div class="paymentform card">
     <div class="card-body">
       <h5 class="card-title">Payment Details</h5>
-      This is some text within a card body.
+      <form [formGroup]="paymentForm" #ngForm="ngForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="countrySelect">Select Country</label>
+          <select class="form-control" id="countrySelect" formControlName="country">
+            <option *ngFor="let country of countries" [value]="country.code">{{ country.name }}</option>
+          </select>
+        </div>
+      </form>
     </div>
   </div>
 </article>
